@@ -1,4 +1,4 @@
-# Developer Workstation
+# LIONGATE Env
 
 Official company development environment repository. Contains workstation provisioning, developer tooling, VS Code settings, shell configurations, and onboarding automation.
 
@@ -20,8 +20,8 @@ Official company development environment repository. Contains workstation provis
 ## Quick Start
 
 ```bash
-git clone git@github.com:company/dev-workstation.git
+git clone git@github.com:company/liongate-env.git
 
-cd dev-workstation
+cd liongate-env
 
 ./scripts/bootstrap.sh
