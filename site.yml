@@ -1,15 +1,11 @@
 ---
 # Root provisioning playbook for Liongate workstations.
 #
-# Roles are wired in by tag (dev, user) as they are delivered in later tickets
-# (see WKS #3+). Until then this is a minimal, runnable placeholder so that the
-# Makefile targets and scripts/bootstrap.sh have a valid playbook to execute.
+# The common role always runs (base packages, Git and SSH configuration).
+# Stack roles are added under the 'dev' and 'user' tags in later WKS tickets.
 - name: Provision Liongate workstation
   hosts: all
-  gather_facts: false
-  tasks:
-    - name: Confirm the provisioning entry point is wired up
-      ansible.builtin.debug:
-        msg: >-
-          Liongate workstation provisioning entry point is ready.
-          Roles are delivered in later WKS tickets.
+  gather_facts: true
+  roles:
+    - role: common
+      tags: [common, dev, user]
