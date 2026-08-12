@@ -7,7 +7,6 @@
 SHELL := /bin/bash
 ANSIBLE_PLAYBOOK ?= ansible-playbook
 PLAYBOOK := site.yml
-ANSIBLE_OPTS := -i localhost, -c local
 
 .DEFAULT_GOAL := help
 .PHONY: help bootstrap dev-stack user-stack check
@@ -21,11 +20,11 @@ bootstrap: ## Install Ansible if missing, then provision the full technical stac
 	@scripts/bootstrap.sh
 
 dev-stack: ## Provision the developer stack only (Ansible tag: dev)
-	@$(ANSIBLE_PLAYBOOK) $(ANSIBLE_OPTS) --tags dev $(PLAYBOOK)
+	@$(ANSIBLE_PLAYBOOK) --tags dev $(PLAYBOOK)
 
 user-stack: ## Provision the end-user stack only (Ansible tag: user)
-	@$(ANSIBLE_PLAYBOOK) $(ANSIBLE_OPTS) --tags user $(PLAYBOOK)
+	@$(ANSIBLE_PLAYBOOK) --tags user $(PLAYBOOK)
 
 check: ## Dry-run the playbook and lint the provisioning code
-	@$(ANSIBLE_PLAYBOOK) $(ANSIBLE_OPTS) --check $(PLAYBOOK)
+	@$(ANSIBLE_PLAYBOOK) --check $(PLAYBOOK)
 	@ansible-lint $(PLAYBOOK)

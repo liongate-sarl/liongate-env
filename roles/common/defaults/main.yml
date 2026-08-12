@@ -1,0 +1,14 @@
+---
+# Git identity written to ~/.gitconfig. Empty by default so no identity is
+# hardcoded in the repo; set these per user (extra vars or a vars file) to
+# configure Git. When either is empty, the Git config task is skipped.
+common_git_user_name: ""
+common_git_user_email: ""
+
+# Base OS packages installed on every workstation.
+common_base_packages:
+  - curl
+  - git
+  - unzip
+  - build-essential
+  - ca-certificates

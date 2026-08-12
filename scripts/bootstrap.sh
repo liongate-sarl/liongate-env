@@ -13,8 +13,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PLAYBOOK="${REPO_ROOT}/site.yml"
-INVENTORY="localhost,"
+PLAYBOOK="site.yml"
 
 log()  { printf '\033[1;34m[bootstrap]\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[bootstrap]\033[0m %s\n' "$*" >&2; }
@@ -53,8 +52,10 @@ ensure_ansible() {
 main() {
   check_os
   ensure_ansible
-  log "Running playbook: ${PLAYBOOK}"
-  ansible-playbook -i "${INVENTORY}" -c local "${PLAYBOOK}" "$@"
+  # Run from the repo root so ansible.cfg (and its inventory) is picked up.
+  cd "${REPO_ROOT}" || die "Cannot enter ${REPO_ROOT}"
+  log "Running playbook: ${PLAYBOOK} (inventory from ansible.cfg)"
+  ansible-playbook "${PLAYBOOK}" "$@"
   log "Bootstrap complete."
 }
 
