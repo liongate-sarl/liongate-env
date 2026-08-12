@@ -19,9 +19,12 @@ Official company development environment repository. Contains workstation provis
 
 ## Quick Start
 
+On a freshly installed Ubuntu LTS:
+
 ```bash
-git clone git@github.com:company/liongate-env.git
-
+git clone git@github.com:liongate-sarl/liongate-env.git
 cd liongate-env
+make bootstrap
+```
 
-./scripts/bootstrap.sh
+`make bootstrap` installs Ansible if needed, then provisions the full technical stack. Run `make help` to see all available targets.
