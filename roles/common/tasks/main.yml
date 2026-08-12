@@ -1,0 +1,39 @@
+---
+- name: Update apt cache and upgrade the base system
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: safe
+  tags: [packages]
+
+- name: Install base packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ common_base_packages }}"
+    state: present
+  tags: [packages]
+
+- name: Ensure the ~/.ssh directory exists with strict permissions
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.ssh"
+    state: directory
+    mode: "0700"
+  tags: [config]
+
+- name: Deploy the base SSH client config
+  ansible.builtin.template:
+    src: ssh_config.j2
+    dest: "{{ ansible_user_dir }}/.ssh/config"
+    mode: "0600"
+  tags: [config]
+
+- name: Deploy the global Git configuration
+  ansible.builtin.template:
+    src: gitconfig.j2
+    dest: "{{ ansible_user_dir }}/.gitconfig"
+    mode: "0600"
+  when:
+    - common_git_user_name | length > 0
+    - common_git_user_email | length > 0
+  tags: [config]
