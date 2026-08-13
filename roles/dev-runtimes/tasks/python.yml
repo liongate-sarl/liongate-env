@@ -13,6 +13,7 @@
     version: master
     depth: 1
     update: false
+    recursive: false
 
 - name: Check the installed Python versions
   ansible.builtin.command: "{{ devruntimes_pyenv_root }}/bin/pyenv versions --bare"

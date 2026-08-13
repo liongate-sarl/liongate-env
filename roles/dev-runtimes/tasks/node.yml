@@ -5,6 +5,7 @@
     dest: "{{ devruntimes_nvm_dir }}"
     version: "v{{ devruntimes_nvm_version }}"
     depth: 1
+    recursive: false
 
 - name: Check the installed Node.js version
   ansible.builtin.shell: |
