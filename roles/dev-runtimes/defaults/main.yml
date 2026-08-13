@@ -1,0 +1,34 @@
+---
+# Versions are the source of truth here and mirror the Tech Radar.
+# Change a value to bump the corresponding runtime.
+
+# Node.js / pnpm (installed per user via nvm + Corepack)
+devruntimes_nvm_version: "0.40.1"
+devruntimes_node_version: "22"
+devruntimes_pnpm_version: "11.18.0"
+
+# Python (installed per user via pyenv; compiled from source)
+devruntimes_python_version: "3.12.7"
+
+# Java (installed per user via SDKMAN; Temurin build)
+devruntimes_java_version: "21.0.5-tem"
+
+# Per-user install locations
+devruntimes_nvm_dir: "{{ ansible_user_dir }}/.nvm"
+devruntimes_pyenv_root: "{{ ansible_user_dir }}/.pyenv"
+devruntimes_sdkman_dir: "{{ ansible_user_dir }}/.sdkman"
+
+# Build dependencies required to compile Python with pyenv.
+devruntimes_python_build_deps:
+  - make
+  - build-essential
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - libffi-dev
+  - liblzma-dev
+  - tk-dev
+  - libncursesw5-dev
+  - xz-utils

@@ -1,0 +1,52 @@
+---
+- name: Install nvm
+  ansible.builtin.git:
+    repo: https://github.com/nvm-sh/nvm.git
+    dest: "{{ devruntimes_nvm_dir }}"
+    version: "v{{ devruntimes_nvm_version }}"
+    depth: 1
+    recursive: false
+
+- name: Check the installed Node.js version
+  ansible.builtin.shell: |
+    . "{{ devruntimes_nvm_dir }}/nvm.sh"
+    nvm version "{{ devruntimes_node_version }}"
+  args:
+    executable: /bin/bash
+  register: devruntimes_node_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Node.js via nvm (version {{ devruntimes_node_version }})
+  ansible.builtin.shell: |
+    . "{{ devruntimes_nvm_dir }}/nvm.sh"
+    nvm install "{{ devruntimes_node_version }}"
+    nvm alias default "{{ devruntimes_node_version }}"
+  args:
+    executable: /bin/bash
+  register: devruntimes_node_install
+  changed_when: "'N/A' in devruntimes_node_check.stdout or devruntimes_node_version not in devruntimes_node_check.stdout"
+  when: devruntimes_node_version not in devruntimes_node_check.stdout
+
+- name: Check the installed pnpm version
+  ansible.builtin.shell: |
+    . "{{ devruntimes_nvm_dir }}/nvm.sh"
+    nvm use default >/dev/null
+    pnpm --version
+  args:
+    executable: /bin/bash
+  register: devruntimes_pnpm_check
+  changed_when: false
+  failed_when: false
+
+- name: Enable Corepack and activate pnpm {{ devruntimes_pnpm_version }}
+  ansible.builtin.shell: |
+    . "{{ devruntimes_nvm_dir }}/nvm.sh"
+    nvm use default >/dev/null
+    corepack enable
+    corepack prepare "pnpm@{{ devruntimes_pnpm_version }}" --activate
+  args:
+    executable: /bin/bash
+  register: devruntimes_pnpm_activate
+  changed_when: true
+  when: devruntimes_pnpm_version not in devruntimes_pnpm_check.stdout
