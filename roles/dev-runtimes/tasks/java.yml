@@ -1,0 +1,32 @@
+---
+- name: Install SDKMAN
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://get.sdkman.io | bash
+  args:
+    executable: /bin/bash
+    creates: "{{ devruntimes_sdkman_dir }}/bin/sdkman-init.sh"
+  environment:
+    SDKMAN_DIR: "{{ devruntimes_sdkman_dir }}"
+
+- name: Make SDKMAN non-interactive
+  ansible.builtin.lineinfile:
+    path: "{{ devruntimes_sdkman_dir }}/etc/config"
+    regexp: '^sdkman_auto_answer='
+    line: "sdkman_auto_answer=true"
+
+- name: Disable SDKMAN self-update prompts
+  ansible.builtin.lineinfile:
+    path: "{{ devruntimes_sdkman_dir }}/etc/config"
+    regexp: '^sdkman_selfupdate_feature='
+    line: "sdkman_selfupdate_feature=false"
+
+- name: Install Temurin Java via SDKMAN (version {{ devruntimes_java_version }})
+  ansible.builtin.shell: |
+    set -o pipefail
+    . "{{ devruntimes_sdkman_dir }}/bin/sdkman-init.sh"
+    sdk install java "{{ devruntimes_java_version }}"
+    sdk default java "{{ devruntimes_java_version }}"
+  args:
+    executable: /bin/bash
+    creates: "{{ devruntimes_sdkman_dir }}/candidates/java/{{ devruntimes_java_version }}"
