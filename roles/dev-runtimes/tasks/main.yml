@@ -1,0 +1,12 @@
+---
+- name: Install Docker and Docker Compose
+  ansible.builtin.import_tasks: docker.yml
+
+- name: Install Node.js and pnpm via nvm
+  ansible.builtin.import_tasks: node.yml
+
+- name: Install Python via pyenv
+  ansible.builtin.import_tasks: python.yml
+
+- name: Install Java via SDKMAN
+  ansible.builtin.import_tasks: java.yml
