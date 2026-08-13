@@ -1,0 +1,47 @@
+---
+- name: Install Python build dependencies
+  become: true
+  ansible.builtin.apt:
+    name: "{{ devruntimes_python_build_deps }}"
+    state: present
+    update_cache: true
+
+- name: Install pyenv
+  ansible.builtin.git:
+    repo: https://github.com/pyenv/pyenv.git
+    dest: "{{ devruntimes_pyenv_root }}"
+    version: master
+    depth: 1
+    update: false
+
+- name: Check the installed Python versions
+  ansible.builtin.command: "{{ devruntimes_pyenv_root }}/bin/pyenv versions --bare"
+  environment:
+    PYENV_ROOT: "{{ devruntimes_pyenv_root }}"
+  register: devruntimes_pyenv_versions
+  changed_when: false
+  failed_when: false
+
+- name: Install Python via pyenv, compiled from source (version {{ devruntimes_python_version }})
+  ansible.builtin.command: "{{ devruntimes_pyenv_root }}/bin/pyenv install {{ devruntimes_python_version }}"
+  environment:
+    PYENV_ROOT: "{{ devruntimes_pyenv_root }}"
+  register: devruntimes_pyenv_install
+  changed_when: true
+  when: devruntimes_python_version not in devruntimes_pyenv_versions.stdout_lines
+
+- name: Read the current global Python version
+  ansible.builtin.command: "{{ devruntimes_pyenv_root }}/bin/pyenv global"
+  environment:
+    PYENV_ROOT: "{{ devruntimes_pyenv_root }}"
+  register: devruntimes_pyenv_global_current
+  changed_when: false
+  failed_when: false
+
+- name: Set the global Python version
+  ansible.builtin.command: "{{ devruntimes_pyenv_root }}/bin/pyenv global {{ devruntimes_python_version }}"
+  environment:
+    PYENV_ROOT: "{{ devruntimes_pyenv_root }}"
+  register: devruntimes_pyenv_global_set
+  changed_when: true
+  when: devruntimes_python_version not in devruntimes_pyenv_global_current.stdout
