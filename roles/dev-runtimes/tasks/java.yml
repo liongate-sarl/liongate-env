@@ -1,4 +1,13 @@
 ---
+- name: Install SDKMAN prerequisites
+  become: true
+  ansible.builtin.apt:
+    name:
+      - zip
+      - unzip
+    state: present
+    update_cache: true
+
 - name: Install SDKMAN
   ansible.builtin.shell: |
     set -o pipefail
