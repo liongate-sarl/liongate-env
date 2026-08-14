@@ -21,24 +21,33 @@
     state: present
     update_cache: true
 
-# Helm (official Helm apt repo)
-- name: Add the Helm apt signing key
-  become: true
-  ansible.builtin.get_url:
-    url: https://baltocdn.com/helm/signing.asc
-    dest: /etc/apt/keyrings/helm.asc
-    mode: "0644"
-
-- name: Add the Helm apt repository
-  become: true
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ cloudcli_dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/helm.asc] https://baltocdn.com/helm/stable/debian/ all main"
-    filename: helm
-    state: present
+# Helm (official release tarball from get.helm.sh; baltocdn apt repo has an
+# incomplete TLS chain, so we avoid it)
+- name: Check for an existing Helm install
+  ansible.builtin.command: helm version --short
+  register: cloudcli_helm_check
+  changed_when: false
+  failed_when: false
 
 - name: Install Helm
-  become: true
-  ansible.builtin.apt:
-    name: helm
-    state: present
-    update_cache: true
+  when: cloudcli_helm_version not in (cloudcli_helm_check.stdout | default(''))
+  block:
+    - name: Download the Helm release tarball
+      ansible.builtin.get_url:
+        url: "https://get.helm.sh/helm-{{ cloudcli_helm_version }}-linux-{{ cloudcli_dpkg_arch.stdout }}.tar.gz"
+        dest: /tmp/helm.tar.gz
+        mode: "0644"
+
+    - name: Unpack the Helm tarball
+      ansible.builtin.unarchive:
+        src: /tmp/helm.tar.gz
+        dest: /tmp
+        remote_src: true
+
+    - name: Install the Helm binary
+      become: true
+      ansible.builtin.copy:
+        src: "/tmp/linux-{{ cloudcli_dpkg_arch.stdout }}/helm"
+        dest: /usr/local/bin/helm
+        mode: "0755"
+        remote_src: true

@@ -4,6 +4,9 @@
 # kubectl apt repo minor channel (pkgs.k8s.io)
 cloudcli_kubectl_channel: "v1.31"
 
+# Helm version (installed from the official get.helm.sh release tarball)
+cloudcli_helm_version: "v3.16.3"
+
 # PostgreSQL client major version (PGDG apt repo)
 cloudcli_postgres_version: "16"
 
