@@ -1,0 +1,34 @@
+---
+- name: Install prerequisite packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ cloudcli_prerequisites }}"
+    state: present
+    update_cache: true
+
+- name: Ensure the apt keyrings directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Determine the dpkg architecture
+  ansible.builtin.command: dpkg --print-architecture
+  register: cloudcli_dpkg_arch
+  changed_when: false
+
+- name: Install AWS CLI v2
+  ansible.builtin.import_tasks: aws.yml
+
+- name: Install kubectl and Helm
+  ansible.builtin.import_tasks: kubernetes.yml
+
+- name: Install Terraform
+  ansible.builtin.import_tasks: terraform.yml
+
+- name: Install the PostgreSQL client
+  ansible.builtin.import_tasks: postgres.yml
+
+- name: Install pgAdmin
+  ansible.builtin.import_tasks: pgadmin.yml
