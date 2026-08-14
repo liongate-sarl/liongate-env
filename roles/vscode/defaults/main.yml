@@ -1,0 +1,12 @@
+---
+# Standard VS Code extensions installed for the user. Ratifiable list —
+# change here to adjust the workstation baseline.
+vscode_extensions:
+  - dbaeumer.vscode-eslint
+  - esbenp.prettier-vscode
+  - ms-python.python
+  - ms-azuretools.vscode-docker
+  - eamodio.gitlens
+  - redhat.vscode-yaml
+  - hashicorp.terraform
+  - editorconfig.editorconfig
