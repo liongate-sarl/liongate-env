@@ -1,0 +1,12 @@
+---
+- name: List already-installed VS Code extensions
+  ansible.builtin.command: code --list-extensions
+  register: vscode_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install the standard VS Code extensions
+  ansible.builtin.command: "code --install-extension {{ item }}"
+  loop: "{{ vscode_extensions }}"
+  when: item not in vscode_installed.stdout
+  changed_when: true
