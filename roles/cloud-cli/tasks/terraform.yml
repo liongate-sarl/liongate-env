@@ -9,7 +9,10 @@
 - name: Add the HashiCorp apt repository
   become: true
   ansible.builtin.apt_repository:
-    repo: "deb [arch={{ cloudcli_dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/hashicorp.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+    repo: >-
+      deb [arch={{ cloudcli_dpkg_arch.stdout }}
+      signed-by=/etc/apt/keyrings/hashicorp.asc]
+      https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
     filename: hashicorp
     state: present
 

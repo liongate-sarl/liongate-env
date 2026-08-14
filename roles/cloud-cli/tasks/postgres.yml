@@ -13,7 +13,7 @@
     filename: pgdg
     state: present
 
-- name: Install the PostgreSQL {{ cloudcli_postgres_version }} client
+- name: Install the PostgreSQL client (version {{ cloudcli_postgres_version }})
   become: true
   ansible.builtin.apt:
     name: "postgresql-client-{{ cloudcli_postgres_version }}"
