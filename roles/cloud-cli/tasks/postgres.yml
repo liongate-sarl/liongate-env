@@ -1,0 +1,21 @@
+---
+- name: Add the PostgreSQL (PGDG) apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /etc/apt/keyrings/pgdg.asc
+    mode: "0644"
+
+- name: Add the PGDG apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/pgdg.asc] https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    filename: pgdg
+    state: present
+
+- name: Install the PostgreSQL {{ cloudcli_postgres_version }} client
+  become: true
+  ansible.builtin.apt:
+    name: "postgresql-client-{{ cloudcli_postgres_version }}"
+    state: present
+    update_cache: true
