@@ -1,0 +1,21 @@
+---
+- name: Add the pgAdmin apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://www.pgadmin.org/static/packages_pgadmin_org.pub
+    dest: /etc/apt/keyrings/pgadmin.asc
+    mode: "0644"
+
+- name: Add the pgAdmin apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/pgadmin.asc] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ ansible_distribution_release }} pgadmin4 main"
+    filename: pgadmin4
+    state: present
+
+- name: Install pgAdmin ({{ cloudcli_pgadmin_package }})
+  become: true
+  ansible.builtin.apt:
+    name: "{{ cloudcli_pgadmin_package }}"
+    state: present
+    update_cache: true
