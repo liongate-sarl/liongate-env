@@ -1,0 +1,21 @@
+---
+- name: Ensure the apt keyrings directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Determine the dpkg architecture
+  ansible.builtin.command: dpkg --print-architecture
+  register: vscode_dpkg_arch
+  changed_when: false
+
+- name: Install VS Code
+  ansible.builtin.import_tasks: install.yml
+
+- name: Install VS Code extensions
+  ansible.builtin.import_tasks: extensions.yml
+
+- name: Deploy VS Code settings
+  ansible.builtin.import_tasks: settings.yml
