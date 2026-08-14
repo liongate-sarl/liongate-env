@@ -1,0 +1,20 @@
+---
+# Versions / channels are the source of truth here and mirror the Tech Radar.
+
+# kubectl apt repo minor channel (pkgs.k8s.io)
+cloudcli_kubectl_channel: "v1.31"
+
+# PostgreSQL client major version (PGDG apt repo)
+cloudcli_postgres_version: "16"
+
+# pgAdmin apt package. Default is the desktop GUI for workstations;
+# set to pgadmin4-web for server mode.
+cloudcli_pgadmin_package: "pgadmin4-desktop"
+
+# Prerequisite packages the repos and installers need.
+cloudcli_prerequisites:
+  - ca-certificates
+  - curl
+  - gnupg
+  - unzip
+  - apt-transport-https
