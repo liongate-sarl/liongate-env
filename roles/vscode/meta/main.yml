@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: vscode
+  namespace: liongate
+  author: Liongate
+  description: Standardize VS Code — install, extensions and baseline settings.
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+dependencies: []

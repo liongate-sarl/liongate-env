@@ -13,3 +13,5 @@
       tags: [dev]
     - role: cloud-cli
       tags: [dev]
+    - role: vscode
+      tags: [dev]
