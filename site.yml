@@ -11,3 +11,5 @@
       tags: [common, dev, user]
     - role: dev-runtimes
       tags: [dev]
+    - role: cloud-cli
+      tags: [dev]

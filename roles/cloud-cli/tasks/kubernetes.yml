@@ -1,0 +1,53 @@
+---
+# kubectl (official Kubernetes apt repo: pkgs.k8s.io)
+- name: Add the Kubernetes apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: "https://pkgs.k8s.io/core:/stable:/{{ cloudcli_kubectl_channel }}/deb/Release.key"
+    dest: /etc/apt/keyrings/kubernetes.asc
+    mode: "0644"
+
+- name: Add the Kubernetes apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes.asc] https://pkgs.k8s.io/core:/stable:/{{ cloudcli_kubectl_channel }}/deb/ /"
+    filename: kubernetes
+    state: present
+
+- name: Install kubectl
+  become: true
+  ansible.builtin.apt:
+    name: kubectl
+    state: present
+    update_cache: true
+
+# Helm (official release tarball from get.helm.sh; baltocdn apt repo has an
+# incomplete TLS chain, so we avoid it)
+- name: Check for an existing Helm install
+  ansible.builtin.command: helm version --short
+  register: cloudcli_helm_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Helm
+  when: cloudcli_helm_version not in (cloudcli_helm_check.stdout | default(''))
+  block:
+    - name: Download the Helm release tarball
+      ansible.builtin.get_url:
+        url: "https://get.helm.sh/helm-{{ cloudcli_helm_version }}-linux-{{ cloudcli_dpkg_arch.stdout }}.tar.gz"
+        dest: /tmp/helm.tar.gz
+        mode: "0644"
+
+    - name: Unpack the Helm tarball
+      ansible.builtin.unarchive:
+        src: /tmp/helm.tar.gz
+        dest: /tmp
+        remote_src: true
+
+    - name: Install the Helm binary
+      become: true
+      ansible.builtin.copy:
+        src: "/tmp/linux-{{ cloudcli_dpkg_arch.stdout }}/helm"
+        dest: /usr/local/bin/helm
+        mode: "0755"
+        remote_src: true

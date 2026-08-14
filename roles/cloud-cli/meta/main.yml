@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: cloud_cli
+  namespace: liongate
+  author: Liongate
+  description: Cloud & DevOps CLIs — AWS CLI, kubectl, Helm, Terraform, PostgreSQL client, pgAdmin.
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+dependencies: []
