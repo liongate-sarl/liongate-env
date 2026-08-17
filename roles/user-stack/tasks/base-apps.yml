@@ -1,0 +1,7 @@
+---
+- name: Install base end-user apps from the Ubuntu archive
+  become: true
+  ansible.builtin.apt:
+    name: "{{ userstack_base_apps }}"
+    state: present
+    update_cache: true
