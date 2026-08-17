@@ -1,28 +1,25 @@
 ---
-# Google Chrome
-- name: Add the Google Chrome apt signing key
-  become: true
-  ansible.builtin.get_url:
-    url: https://dl.google.com/linux/linux_signing_key.pub
-    dest: /etc/apt/keyrings/google-chrome.asc
-    mode: "0644"
+# Google Chrome — install the direct .deb; the package manages its own apt
+# repo, so adding one ourselves would be rewritten on every run (not idempotent).
+- name: Check for an existing Google Chrome install
+  ansible.builtin.command: dpkg-query -W -f='${Status}' google-chrome-stable
+  register: userstack_chrome_check
+  changed_when: false
+  failed_when: false
 
-- name: Add the Google Chrome apt repository
-  become: true
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [arch={{ userstack_dpkg_arch.stdout }}
-      signed-by=/etc/apt/keyrings/google-chrome.asc]
-      https://dl.google.com/linux/chrome/deb/ stable main
-    filename: google-chrome
-    state: present
+- name: Install Google Chrome from the official .deb
+  when: "'install ok installed' not in userstack_chrome_check.stdout"
+  block:
+    - name: Download the Google Chrome .deb
+      ansible.builtin.get_url:
+        url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        dest: /tmp/google-chrome.deb
+        mode: "0644"
 
-- name: Install Google Chrome
-  become: true
-  ansible.builtin.apt:
-    name: google-chrome-stable
-    state: present
-    update_cache: true
+    - name: Install the Google Chrome package
+      become: true
+      ansible.builtin.apt:
+        deb: /tmp/google-chrome.deb
 
 # Signal
 - name: Add the Signal apt signing key
