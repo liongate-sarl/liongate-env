@@ -1,0 +1,20 @@
+---
+- name: Check for an existing Insomnia install
+  ansible.builtin.command: dpkg-query -W -f='${Status}' insomnia
+  register: userstack_insomnia_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Insomnia from the official .deb
+  when: "'install ok installed' not in userstack_insomnia_check.stdout"
+  block:
+    - name: Download the Insomnia .deb
+      ansible.builtin.get_url:
+        url: "{{ userstack_insomnia_deb_url }}"
+        dest: /tmp/insomnia.deb
+        mode: "0644"
+
+    - name: Install the Insomnia package
+      become: true
+      ansible.builtin.apt:
+        deb: /tmp/insomnia.deb
