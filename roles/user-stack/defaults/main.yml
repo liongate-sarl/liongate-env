@@ -4,8 +4,8 @@ userstack_base_apps:
   - vlc
   - libreoffice
 
-# Insomnia — no apt repo; installed from the latest official .deb.
-userstack_insomnia_deb_url: "https://updates.insomnia.rest/downloads/ubuntu/latest?app=Insomnia%20Core&source=website"
+# Insomnia — no apt repo; the latest .deb is resolved from GitHub releases.
+userstack_insomnia_repo: "Kong/insomnia"
 
 # Postman — no apt repo; installed from the official tarball into /opt.
 userstack_postman_url: "https://dl.pstmn.io/download/latest/linux_64"

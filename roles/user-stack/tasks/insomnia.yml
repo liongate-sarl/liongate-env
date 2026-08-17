@@ -5,12 +5,18 @@
   changed_when: false
   failed_when: false
 
-- name: Install Insomnia from the official .deb
+- name: Install Insomnia from the latest GitHub release .deb
   when: "'install ok installed' not in userstack_insomnia_check.stdout"
   block:
+    - name: Resolve the latest Insomnia release
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/{{ userstack_insomnia_repo }}/releases/latest"
+        return_content: true
+      register: userstack_insomnia_release
+
     - name: Download the Insomnia .deb
       ansible.builtin.get_url:
-        url: "{{ userstack_insomnia_deb_url }}"
+        url: '{{ userstack_insomnia_release.json.assets | selectattr("name", "search", "\.deb$") | map(attribute="browser_download_url") | first }}'
         dest: /tmp/insomnia.deb
         mode: "0644"
 
