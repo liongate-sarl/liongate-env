@@ -1,0 +1,23 @@
+---
+- name: Install Docker Desktop
+  when: userstack_docker_desktop | bool
+  block:
+    - name: Check for an existing Docker Desktop install
+      ansible.builtin.command: dpkg-query -W -f='${Status}' docker-desktop
+      register: userstack_dd_check
+      changed_when: false
+      failed_when: false
+
+    - name: Download and install Docker Desktop
+      when: "'install ok installed' not in userstack_dd_check.stdout"
+      block:
+        - name: Download the Docker Desktop .deb
+          ansible.builtin.get_url:
+            url: "{{ userstack_docker_desktop_deb_url }}"
+            dest: /tmp/docker-desktop.deb
+            mode: "0644"
+
+        - name: Install the Docker Desktop package
+          become: true
+          ansible.builtin.apt:
+            deb: /tmp/docker-desktop.deb
