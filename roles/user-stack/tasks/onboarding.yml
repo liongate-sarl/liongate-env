@@ -1,0 +1,6 @@
+---
+- name: Deploy the onboarding welcome file
+  ansible.builtin.template:
+    src: onboarding.md.j2
+    dest: "{{ userstack_onboarding_file }}"
+    mode: "0644"
