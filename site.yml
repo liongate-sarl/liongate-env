@@ -15,3 +15,5 @@
       tags: [dev]
     - role: vscode
       tags: [dev]
+    - role: user-stack
+      tags: [user]
