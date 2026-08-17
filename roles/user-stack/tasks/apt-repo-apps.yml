@@ -1,0 +1,50 @@
+---
+# Google Chrome
+- name: Add the Google Chrome apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://dl.google.com/linux/linux_signing_key.pub
+    dest: /etc/apt/keyrings/google-chrome.asc
+    mode: "0644"
+
+- name: Add the Google Chrome apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ userstack_dpkg_arch.stdout }}
+      signed-by=/etc/apt/keyrings/google-chrome.asc]
+      https://dl.google.com/linux/chrome/deb/ stable main
+    filename: google-chrome
+    state: present
+
+- name: Install Google Chrome
+  become: true
+  ansible.builtin.apt:
+    name: google-chrome-stable
+    state: present
+    update_cache: true
+
+# Signal
+- name: Add the Signal apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://updates.signal.org/desktop/apt/keys.asc
+    dest: /etc/apt/keyrings/signal.asc
+    mode: "0644"
+
+- name: Add the Signal apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ userstack_dpkg_arch.stdout }}
+      signed-by=/etc/apt/keyrings/signal.asc]
+      https://updates.signal.org/desktop/apt xenial main
+    filename: signal-desktop
+    state: present
+
+- name: Install Signal
+  become: true
+  ansible.builtin.apt:
+    name: signal-desktop
+    state: present
+    update_cache: true
