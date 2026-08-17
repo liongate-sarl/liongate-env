@@ -1,0 +1,50 @@
+---
+- name: Check for an existing Postman install
+  ansible.builtin.stat:
+    path: "{{ userstack_postman_dir }}/Postman"
+  register: userstack_postman_stat
+
+- name: Install Postman from the official tarball
+  when: not userstack_postman_stat.stat.exists
+  block:
+    - name: Download the Postman tarball
+      ansible.builtin.get_url:
+        url: "{{ userstack_postman_url }}"
+        dest: /tmp/postman.tar.gz
+        mode: "0644"
+
+    - name: Create the Postman install directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ userstack_postman_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Unpack Postman into its install directory
+      become: true
+      ansible.builtin.unarchive:
+        src: /tmp/postman.tar.gz
+        dest: "{{ userstack_postman_dir }}"
+        remote_src: true
+        extra_opts:
+          - --strip-components=1
+
+    - name: Symlink the Postman binary onto PATH
+      become: true
+      ansible.builtin.file:
+        src: "{{ userstack_postman_dir }}/Postman"
+        dest: /usr/local/bin/postman
+        state: link
+
+- name: Create the Postman desktop entry
+  become: true
+  ansible.builtin.copy:
+    dest: /usr/share/applications/postman.desktop
+    mode: "0644"
+    content: |
+      [Desktop Entry]
+      Name=Postman
+      Exec={{ userstack_postman_dir }}/Postman
+      Type=Application
+      Categories=Development;
+      Terminal=false
