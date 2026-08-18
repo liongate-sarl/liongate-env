@@ -1,0 +1,62 @@
+---
+# Google Chrome — add the apt repo and install only when absent. The apt repo
+# resolves dependencies correctly (the direct .deb fails on the noble
+# libasound2t64 transition), and guarding the whole block on "not installed"
+# means we never re-touch Chrome's self-managed repo afterwards (idempotent).
+- name: Check for an existing Google Chrome install
+  ansible.builtin.command: dpkg-query -W -f='${Status}' google-chrome-stable
+  register: userstack_chrome_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Google Chrome
+  when: "'install ok installed' not in userstack_chrome_check.stdout"
+  block:
+    - name: Add the Google Chrome apt signing key
+      become: true
+      ansible.builtin.get_url:
+        url: https://dl.google.com/linux/linux_signing_key.pub
+        dest: /etc/apt/keyrings/google-chrome.asc
+        mode: "0644"
+
+    - name: Add the Google Chrome apt repository
+      become: true
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [arch={{ userstack_dpkg_arch.stdout }}
+          signed-by=/etc/apt/keyrings/google-chrome.asc]
+          https://dl.google.com/linux/chrome/deb/ stable main
+        filename: google-chrome
+        state: present
+
+    - name: Install the Google Chrome package
+      become: true
+      ansible.builtin.apt:
+        name: google-chrome-stable
+        state: present
+        update_cache: true
+
+# Signal
+- name: Add the Signal apt signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://updates.signal.org/desktop/apt/keys.asc
+    dest: /etc/apt/keyrings/signal.asc
+    mode: "0644"
+
+- name: Add the Signal apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ userstack_dpkg_arch.stdout }}
+      signed-by=/etc/apt/keyrings/signal.asc]
+      https://updates.signal.org/desktop/apt xenial main
+    filename: signal-desktop
+    state: present
+
+- name: Install Signal
+  become: true
+  ansible.builtin.apt:
+    name: signal-desktop
+    state: present
+    update_cache: true
