@@ -56,8 +56,9 @@ jobs:
             useradd -m -s /bin/bash dev
             echo "dev ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dev
             cp -r /src /work && chown -R dev:dev /work
-            # Docker Desktop needs KVM at runtime, so it is skipped in CI.
-            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false"
+            # Skip the heavy GUI apps that cannot run/verify in CI:
+            # Docker Desktop needs KVM; pgAdmin desktop (Qt WebEngine) OOMs the runner.
+            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false -e cloudcli_install_pgadmin=false"
             echo "::group::First run"
             su - dev -c "cd /work && $RUN"
             echo "::endgroup::"
