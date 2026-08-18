@@ -12,7 +12,10 @@
     - name: Add the pgAdmin apt repository
       become: true
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/pgadmin.asc] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ ansible_distribution_release }} pgadmin4 main"
+        repo: >-
+          deb [signed-by=/etc/apt/keyrings/pgadmin.asc]
+          https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ ansible_distribution_release }}
+          pgadmin4 main
         filename: pgadmin4
         state: present
 
