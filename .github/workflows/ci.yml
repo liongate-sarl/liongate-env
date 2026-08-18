@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ansible-lint + shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ansible-lint
+        run: python -m pip install --upgrade ansible-lint
+
+      - name: Run ansible-lint
+        run: ansible-lint
+
+      - name: Run shellcheck
+        run: shellcheck scripts/*.sh
+
+  idempotence:
+    name: Idempotence (playbook runs twice, 2nd must report no change)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup \
+            /usr/local/lib/android /opt/hostedtoolcache/CodeQL
+          sudo docker image prune -af || true
+          df -h /
+
+      - name: Provision twice in a clean Ubuntu container
+        run: |
+          docker run --rm -v "$PWD":/src:ro ubuntu:24.04 bash -c '
+            set -euo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            # No init system in the container: stop package postinst starting services.
+            printf "#!/bin/sh\nexit 101\n" > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d
+            apt-get update -qq
+            apt-get install -y -qq ansible make git curl ca-certificates sudo
+            # Run as a non-root user with passwordless sudo, like a real workstation user.
+            useradd -m -s /bin/bash dev
+            echo "dev ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dev
+            cp -r /src /work && chown -R dev:dev /work
+            # Skip the heavy GUI apps that cannot run/verify in CI:
+            # Docker Desktop needs KVM; pgAdmin desktop (Qt WebEngine) OOMs the runner.
+            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false -e cloudcli_install_pgadmin=false"
+            echo "::group::First run"
+            su - dev -c "cd /work && $RUN"
+            echo "::endgroup::"
+            echo "::group::Second run (idempotence)"
+            su - dev -c "cd /work && $RUN > /tmp/run2.log 2>&1"
+            tail -n 20 /tmp/run2.log
+            echo "::endgroup::"
+            if grep -qE "changed=[1-9]" /tmp/run2.log; then
+              echo "::error::Playbook reported changes on the second run — not idempotent"
+              exit 1
+            fi
+            echo "Idempotent: the second run reported no changes."
+          '

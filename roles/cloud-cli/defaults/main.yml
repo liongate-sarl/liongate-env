@@ -14,6 +14,10 @@ cloudcli_postgres_version: "16"
 # set to pgadmin4-web for server mode.
 cloudcli_pgadmin_package: "pgadmin4-desktop"
 
+# Set to false to skip pgAdmin (e.g. on servers or in CI, where the heavy
+# desktop package is unnecessary).
+cloudcli_install_pgadmin: true
+
 # Prerequisite packages the repos and installers need.
 cloudcli_prerequisites:
   - ca-certificates
