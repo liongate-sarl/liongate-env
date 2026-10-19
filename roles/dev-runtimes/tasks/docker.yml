@@ -26,6 +26,7 @@
   ansible.builtin.command: dpkg --print-architecture
   register: devruntimes_dpkg_arch
   changed_when: false
+  check_mode: false
 
 - name: Add the Docker apt repository
   become: true

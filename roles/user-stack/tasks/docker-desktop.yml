@@ -6,6 +6,7 @@
       ansible.builtin.command: dpkg-query -W -f='${Status}' docker-desktop
       register: userstack_dd_check
       changed_when: false
+      check_mode: false
       failed_when: false
 
     - name: Download and install Docker Desktop

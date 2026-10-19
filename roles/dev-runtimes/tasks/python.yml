@@ -21,6 +21,7 @@
     PYENV_ROOT: "{{ devruntimes_pyenv_root }}"
   register: devruntimes_pyenv_versions
   changed_when: false
+  check_mode: false
   failed_when: false
 
 - name: Install Python via pyenv, compiled from source (version {{ devruntimes_python_version }})
@@ -37,6 +38,7 @@
     PYENV_ROOT: "{{ devruntimes_pyenv_root }}"
   register: devruntimes_pyenv_global_current
   changed_when: false
+  check_mode: false
   failed_when: false
 
 - name: Set the global Python version

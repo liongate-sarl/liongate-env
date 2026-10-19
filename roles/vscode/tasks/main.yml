@@ -10,6 +10,7 @@
   ansible.builtin.command: dpkg --print-architecture
   register: vscode_dpkg_arch
   changed_when: false
+  check_mode: false
 
 - name: Install VS Code
   ansible.builtin.import_tasks: install.yml

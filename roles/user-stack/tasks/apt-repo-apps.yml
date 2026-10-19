@@ -7,6 +7,7 @@
   ansible.builtin.command: dpkg-query -W -f='${Status}' google-chrome-stable
   register: userstack_chrome_check
   changed_when: false
+  check_mode: false
   failed_when: false
 
 - name: Install Google Chrome
