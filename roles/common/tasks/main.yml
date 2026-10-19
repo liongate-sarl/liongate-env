@@ -21,6 +21,13 @@
     mode: "0700"
   tags: [config]
 
+- name: Ensure the ~/.ssh/config.d directory exists for per-user Host entries
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.ssh/config.d"
+    state: directory
+    mode: "0700"
+  tags: [config]
+
 - name: Deploy the base SSH client config
   ansible.builtin.template:
     src: ssh_config.j2
