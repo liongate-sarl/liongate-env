@@ -1,0 +1,39 @@
+---
+# Thunderbird. On Ubuntu 24.04 the archive package is only a stub that pulls
+# the snap, so install the .deb from the Mozilla Team PPA and pin it above
+# the archive.
+- name: Add the Mozilla Team PPA signing key
+  become: true
+  retries: 3
+  delay: 5
+  ansible.builtin.get_url:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ userstack_mozillateam_key_fingerprint }}"
+    dest: /etc/apt/keyrings/mozillateam.asc
+    mode: "0644"
+
+- name: Add the Mozilla Team PPA
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/etc/apt/keyrings/mozillateam.asc]
+      https://ppa.launchpadcontent.net/mozillateam/ppa/ubuntu
+      {{ ansible_distribution_release }} main
+    filename: mozillateam
+    state: present
+
+- name: Prefer the PPA Thunderbird over the snap stub
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/mozillateam-thunderbird
+    mode: "0644"
+    content: |
+      Package: thunderbird*
+      Pin: release o=LP-PPA-mozillateam
+      Pin-Priority: 1001
+
+- name: Install Thunderbird
+  become: true
+  ansible.builtin.apt:
+    name: thunderbird
+    state: present
+    update_cache: true
