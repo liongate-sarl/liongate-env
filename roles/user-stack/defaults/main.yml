@@ -12,11 +12,10 @@ userstack_postman_url: "https://dl.pstmn.io/download/latest/linux_64"
 userstack_postman_dir: /opt/postman
 
 # Docker Desktop (.deb). Requires KVM at runtime, so it is gated and is NOT
-# verified in the container self-test. Update the version as needed.
+# verified in the container self-test. Docker removes old versioned .debs
+# from its CDN, so the unversioned URL (always the latest release) is used.
 userstack_docker_desktop: true
-userstack_docker_desktop_version: "4.34.3"
-userstack_docker_desktop_deb_url: >-
-  https://desktop.docker.com/linux/main/amd64/docker-desktop-{{ userstack_docker_desktop_version }}-amd64.deb
+userstack_docker_desktop_deb_url: https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb
 
 # Onboarding welcome file.
 userstack_onboarding_file: "{{ ansible_user_dir }}/liongate-onboarding.md"
