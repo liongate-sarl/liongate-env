@@ -10,3 +10,20 @@
 
 - name: Install Java via SDKMAN
   ansible.builtin.import_tasks: java.yml
+
+# nvm and pyenv are cloned with git, so nothing puts them on the PATH of a new
+# shell. Without this block, node, npm, pnpm and the pyenv Python are missing
+# from every terminal. SDKMAN's installer adds its own init lines.
+- name: Load nvm and pyenv in interactive shells
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_user_dir }}/.bashrc"
+    marker: "# {mark} Liongate dev runtimes (managed by provisioning)"
+    create: true
+    mode: "0644"
+    block: |
+      export NVM_DIR="{{ devruntimes_nvm_dir }}"
+      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+      [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+      export PYENV_ROOT="{{ devruntimes_pyenv_root }}"
+      [ -d "$PYENV_ROOT/bin" ] && export PATH="$PYENV_ROOT/bin:$PATH"
+      command -v pyenv >/dev/null && eval "$(pyenv init - bash)"
