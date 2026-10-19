@@ -1,5 +1,7 @@
 ---
 - name: Install nvm
+  retries: 3
+  delay: 5
   ansible.builtin.git:
     repo: https://github.com/nvm-sh/nvm.git
     dest: "{{ devruntimes_nvm_dir }}"
@@ -19,6 +21,8 @@
   failed_when: false
 
 - name: Install Node.js via nvm (version {{ devruntimes_node_version }})
+  retries: 3
+  delay: 5
   ansible.builtin.shell: |
     . "{{ devruntimes_nvm_dir }}/nvm.sh"
     nvm install "{{ devruntimes_node_version }}"
@@ -42,6 +46,8 @@
   failed_when: false
 
 - name: Enable Corepack and activate pnpm {{ devruntimes_pnpm_version }}
+  retries: 3
+  delay: 5
   ansible.builtin.shell: |
     . "{{ devruntimes_nvm_dir }}/nvm.sh"
     nvm use default >/dev/null

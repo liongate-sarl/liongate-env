@@ -7,7 +7,7 @@ Official company development environment repository. Contains workstation provis
 - Ubuntu LTS Standardization
 - Ansible-based Provisioning
 - Docker & Docker Compose
-- Node.js via NVM
+- Node.js, npm and pnpm via NVM
 - Python via pyenv
 - Java via SDKMAN
 - AWS CLI

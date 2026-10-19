@@ -7,6 +7,8 @@
     update_cache: true
 
 - name: Install pyenv
+  retries: 3
+  delay: 5
   ansible.builtin.git:
     repo: https://github.com/pyenv/pyenv.git
     dest: "{{ devruntimes_pyenv_root }}"
@@ -25,6 +27,8 @@
   failed_when: false
 
 - name: Install Python via pyenv, compiled from source (version {{ devruntimes_python_version }})
+  retries: 3
+  delay: 5
   ansible.builtin.command: "{{ devruntimes_pyenv_root }}/bin/pyenv install {{ devruntimes_python_version }}"
   environment:
     PYENV_ROOT: "{{ devruntimes_pyenv_root }}"

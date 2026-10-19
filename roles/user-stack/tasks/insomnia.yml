@@ -10,12 +10,16 @@
   when: "'install ok installed' not in userstack_insomnia_check.stdout"
   block:
     - name: Resolve the latest Insomnia release
+      retries: 3
+      delay: 5
       ansible.builtin.uri:
         url: "https://api.github.com/repos/{{ userstack_insomnia_repo }}/releases/latest"
         return_content: true
       register: userstack_insomnia_release
 
     - name: Download the Insomnia .deb
+      retries: 3
+      delay: 5
       ansible.builtin.get_url:
         url: '{{ userstack_insomnia_release.json.assets | selectattr("name", "search", "\.deb$") | map(attribute="browser_download_url") | first }}'
         dest: /tmp/insomnia.deb

@@ -4,6 +4,8 @@
   block:
     - name: Add the pgAdmin apt signing key
       become: true
+      retries: 3
+      delay: 5
       ansible.builtin.get_url:
         url: https://www.pgadmin.org/static/packages_pgadmin_org.pub
         dest: /etc/apt/keyrings/pgadmin.asc

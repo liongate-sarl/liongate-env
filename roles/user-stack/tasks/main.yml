@@ -18,6 +18,9 @@
 - name: Install apps from third-party apt repos
   ansible.builtin.import_tasks: apt-repo-apps.yml
 
+- name: Install Thunderbird
+  ansible.builtin.import_tasks: thunderbird.yml
+
 - name: Install Insomnia
   ansible.builtin.import_tasks: insomnia.yml
 

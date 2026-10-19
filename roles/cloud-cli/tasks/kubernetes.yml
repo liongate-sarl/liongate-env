@@ -2,6 +2,8 @@
 # kubectl (official Kubernetes apt repo: pkgs.k8s.io)
 - name: Add the Kubernetes apt signing key
   become: true
+  retries: 3
+  delay: 5
   ansible.builtin.get_url:
     url: "https://pkgs.k8s.io/core:/stable:/{{ cloudcli_kubectl_channel }}/deb/Release.key"
     dest: /etc/apt/keyrings/kubernetes.asc
@@ -34,6 +36,8 @@
   when: cloudcli_helm_version not in (cloudcli_helm_check.stdout | default(''))
   block:
     - name: Download the Helm release tarball
+      retries: 3
+      delay: 5
       ansible.builtin.get_url:
         url: "https://get.helm.sh/helm-{{ cloudcli_helm_version }}-linux-{{ cloudcli_dpkg_arch.stdout }}.tar.gz"
         dest: /tmp/helm.tar.gz

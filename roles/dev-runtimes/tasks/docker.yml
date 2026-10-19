@@ -17,6 +17,8 @@
 
 - name: Add the Docker GPG key
   become: true
+  retries: 3
+  delay: 5
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc

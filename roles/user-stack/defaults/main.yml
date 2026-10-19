@@ -4,6 +4,9 @@ userstack_base_apps:
   - vlc
   - libreoffice
 
+# Thunderbird, from the Mozilla Team PPA (Launchpad signing key).
+userstack_mozillateam_key_fingerprint: 738BEB9321D1AAEC13EA9391AEBDF4819BE21867
+
 # Insomnia — no apt repo; the latest .deb is resolved from GitHub releases.
 userstack_insomnia_repo: "Kong/insomnia"
 
