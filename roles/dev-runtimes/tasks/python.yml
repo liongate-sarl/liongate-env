@@ -7,6 +7,8 @@
     update_cache: true
 
 - name: Install pyenv
+  retries: 3
+  delay: 5
   ansible.builtin.git:
     repo: https://github.com/pyenv/pyenv.git
     dest: "{{ devruntimes_pyenv_root }}"
