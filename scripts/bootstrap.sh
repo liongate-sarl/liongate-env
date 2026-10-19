@@ -49,13 +49,39 @@ ensure_ansible() {
   log "Installed: $(ansible-playbook --version | head -n1)"
 }
 
+# Ubuntu 25.10+ defaults to sudo-rs, which rewraps Ansible's password prompt
+# ("[sudo: <prompt>] Password:"), so Ansible never recognises it and times out.
+# The classic sudo still ships alongside as sudo.ws: have Ansible use it.
+select_become_exe() {
+  [[ -n "${ANSIBLE_BECOME_EXE:-}" ]] && return
+  if sudo --version 2>/dev/null | grep -q '^sudo-rs' && command -v sudo.ws >/dev/null 2>&1; then
+    log "sudo-rs detected; Ansible will use the classic sudo (sudo.ws)."
+    export ANSIBLE_BECOME_EXE=sudo.ws
+  fi
+}
+
+# Ansible calls sudo non-interactively, so it cannot prompt for a password on
+# its own ("sudo: interactive authentication is required"). Ask for it up front
+# unless sudo already works without one (root, NOPASSWD, CI). `-k` ignores
+# credentials cached for this terminal: Ansible's own sudo calls can't use them.
+become_args() {
+  if [[ ${EUID} -eq 0 ]] || "${ANSIBLE_BECOME_EXE:-sudo}" -k -n true 2>/dev/null; then
+    return
+  fi
+  log "sudo needs your password: Ansible will prompt for it (BECOME password)." >&2
+  printf '%s\n' --ask-become-pass
+}
+
 main() {
   check_os
   ensure_ansible
   # Run from the repo root so ansible.cfg (and its inventory) is picked up.
   cd "${REPO_ROOT}" || die "Cannot enter ${REPO_ROOT}"
+  select_become_exe
+  local -a become
+  mapfile -t become < <(become_args)
   log "Running playbook: ${PLAYBOOK} (inventory from ansible.cfg)"
-  ansible-playbook "${PLAYBOOK}" "$@"
+  ansible-playbook "${become[@]}" "${PLAYBOOK}" "$@"
   log "Bootstrap complete."
 }
 

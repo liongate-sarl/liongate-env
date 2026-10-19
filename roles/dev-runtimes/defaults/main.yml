@@ -11,7 +11,9 @@ devruntimes_pnpm_version: "11.18.0"
 devruntimes_python_version: "3.12.7"
 
 # Java (installed per user via SDKMAN; Temurin build)
-devruntimes_java_version: "21.0.5-tem"
+# SDKMAN only serves the latest builds: bump this when an install fails with
+# "not a valid java version" (list them with `sdk list java | grep tem`).
+devruntimes_java_version: "21.0.12+1.1-tem"
 
 # Per-user install locations
 devruntimes_nvm_dir: "{{ ansible_user_dir }}/.nvm"
