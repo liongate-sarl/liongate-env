@@ -1,6 +1,8 @@
 ---
 - name: Add the PostgreSQL (PGDG) apt signing key
   become: true
+  retries: 3
+  delay: 5
   ansible.builtin.get_url:
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
     dest: /etc/apt/keyrings/pgdg.asc

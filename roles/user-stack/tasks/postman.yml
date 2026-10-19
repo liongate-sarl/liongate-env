@@ -8,6 +8,8 @@
   when: not userstack_postman_stat.stat.exists
   block:
     - name: Download the Postman tarball
+      retries: 3
+      delay: 5
       ansible.builtin.get_url:
         url: "{{ userstack_postman_url }}"
         dest: /tmp/postman.tar.gz

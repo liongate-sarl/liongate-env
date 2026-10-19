@@ -1,6 +1,8 @@
 ---
 - name: Add the Microsoft (VS Code) apt signing key
   become: true
+  retries: 3
+  delay: 5
   ansible.builtin.get_url:
     url: https://packages.microsoft.com/keys/microsoft.asc
     dest: /etc/apt/keyrings/microsoft.asc

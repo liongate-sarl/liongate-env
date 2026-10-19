@@ -1,6 +1,8 @@
 ---
 - name: Add the HashiCorp apt signing key
   become: true
+  retries: 3
+  delay: 5
   ansible.builtin.get_url:
     url: https://apt.releases.hashicorp.com/gpg
     dest: /etc/apt/keyrings/hashicorp.asc

@@ -1,5 +1,7 @@
 ---
 - name: Install nvm
+  retries: 3
+  delay: 5
   ansible.builtin.git:
     repo: https://github.com/nvm-sh/nvm.git
     dest: "{{ devruntimes_nvm_dir }}"
