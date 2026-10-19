@@ -22,9 +22,10 @@ Official company development environment repository. Contains workstation provis
 On a freshly installed Ubuntu LTS:
 
 ```bash
+sudo apt-get install -y git make
 git clone git@github.com:liongate-sarl/liongate-env.git
 cd liongate-env
 make bootstrap
 ```
 
-`make bootstrap` installs Ansible if needed, then provisions the full technical stack. Run `make help` to see all available targets.
+`make bootstrap` installs Ansible if needed, then provisions the full technical stack. If your account needs a password for `sudo`, Ansible asks for it once at the start (`BECOME password:`). Run `make help` to see all available targets.

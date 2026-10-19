@@ -19,12 +19,15 @@ help: ## Show this help
 bootstrap: ## Install Ansible if missing, then provision the full technical stack
 	@scripts/bootstrap.sh
 
+# The stack targets go through bootstrap.sh too, so they also install Ansible
+# when missing and prompt for the sudo password when one is required.
 dev-stack: ## Provision the developer stack only (Ansible tag: dev)
-	@$(ANSIBLE_PLAYBOOK) --tags dev $(PLAYBOOK)
+	@scripts/bootstrap.sh --tags dev
 
 user-stack: ## Provision the end-user stack only (Ansible tag: user)
-	@$(ANSIBLE_PLAYBOOK) --tags user $(PLAYBOOK)
+	@scripts/bootstrap.sh --tags user
 
 check: ## Dry-run the playbook and lint the provisioning code
-	@$(ANSIBLE_PLAYBOOK) --check $(PLAYBOOK)
+	@scripts/bootstrap.sh --check
+	@command -v ansible-lint >/dev/null 2>&1 || sudo apt-get install -y ansible-lint
 	@ansible-lint $(PLAYBOOK)
