@@ -7,6 +7,8 @@
   failed_when: false
 
 - name: Install the standard VS Code extensions
+  retries: 3
+  delay: 5
   ansible.builtin.command: "code --install-extension {{ item }}"
   loop: "{{ vscode_extensions }}"
   when: item not in vscode_installed.stdout
