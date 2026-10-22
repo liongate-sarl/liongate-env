@@ -10,13 +10,13 @@ cloudcli_helm_version: "v3.16.3"
 # PostgreSQL client major version (PGDG apt repo)
 cloudcli_postgres_version: "16"
 
-# pgAdmin apt package. Default is the desktop GUI for workstations;
-# set to pgadmin4-web for server mode.
-cloudcli_pgadmin_package: "pgadmin4-desktop"
+# DbGate version (installed from the official GitHub release .deb).
+# Upstream only publishes an amd64 .deb.
+cloudcli_dbgate_version: "7.3.2"
 
-# Set to false to skip pgAdmin (e.g. on servers or in CI, where the heavy
-# desktop package is unnecessary).
-cloudcli_install_pgadmin: true
+# Set to false to skip DbGate (e.g. on servers or in CI, where the heavy
+# Electron desktop app is unnecessary).
+cloudcli_install_dbgate: true
 
 # Prerequisite packages the repos and installers need.
 cloudcli_prerequisites:

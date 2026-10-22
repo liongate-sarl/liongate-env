@@ -2,7 +2,15 @@
 # Thunderbird. On Ubuntu 24.04 the archive package is only a stub that pulls
 # the snap, so install the .deb from the Mozilla Team PPA and pin it above
 # the archive.
+- name: Check for the Mozilla Team PPA signing key
+  ansible.builtin.stat:
+    path: /etc/apt/keyrings/mozillateam.asc
+  register: userstack_mozillateam_key
+
+# The keyserver ignores If-Modified-Since and its export differs from one
+# pool node to the next, so only fetch the key when it is missing.
 - name: Add the Mozilla Team PPA signing key
+  when: not userstack_mozillateam_key.stat.exists
   become: true
   retries: 3
   delay: 5
