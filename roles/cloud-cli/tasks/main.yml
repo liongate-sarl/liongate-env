@@ -31,5 +31,5 @@
 - name: Install the PostgreSQL client
   ansible.builtin.import_tasks: postgres.yml
 
-- name: Install pgAdmin
-  ansible.builtin.import_tasks: pgadmin.yml
+- name: Install DbGate
+  ansible.builtin.import_tasks: dbgate.yml
