@@ -63,11 +63,14 @@ jobs:
             su - dev -c "cd /work && $RUN"
             echo "::endgroup::"
             echo "::group::Second run (idempotence)"
-            su - dev -c "cd /work && $RUN > /tmp/run2.log 2>&1"
+            # Skip the system upgrade: updates published since the first run
+            # are not changes made by the playbook.
+            su - dev -c "cd /work && $RUN -e common_upgrade_system=false > /tmp/run2.log 2>&1"
             tail -n 20 /tmp/run2.log
             echo "::endgroup::"
             if grep -qE "changed=[1-9]" /tmp/run2.log; then
               echo "::error::Playbook reported changes on the second run — not idempotent"
+              grep -B2 -E "^changed:" /tmp/run2.log
               exit 1
             fi
             echo "Idempotent: the second run reported no changes."
