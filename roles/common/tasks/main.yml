@@ -1,6 +1,5 @@
 ---
 - name: Update apt cache and upgrade the base system
-  when: common_upgrade_system | bool
   become: true
   ansible.builtin.apt:
     update_cache: true
