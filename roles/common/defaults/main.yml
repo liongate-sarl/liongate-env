@@ -12,3 +12,8 @@ common_base_packages:
   - unzip
   - build-essential
   - ca-certificates
+
+# Upgrade the installed packages at the start of each run. CI turns it off for
+# the idempotence check: updates published between two runs are not a change
+# made by this code.
+common_upgrade_system: true
