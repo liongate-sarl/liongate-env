@@ -1,0 +1,5 @@
+---
+- name: Reload the DbGate AppArmor profile
+  become: true
+  ansible.builtin.command: apparmor_parser -r /etc/apparmor.d/dbgate
+  changed_when: true

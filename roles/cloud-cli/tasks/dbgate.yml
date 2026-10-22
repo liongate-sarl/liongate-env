@@ -26,3 +26,29 @@
           become: true
           ansible.builtin.apt:
             deb: /tmp/dbgate.deb
+
+    # Ubuntu 24.04+ blocks unprivileged user namespaces for apps without an
+    # AppArmor profile, so DbGate's Chromium sandbox aborts at launch. Give it
+    # the same unconfined + userns profile Ubuntu ships for VS Code.
+    - name: Check for AppArmor 4 (userns restriction support)
+      ansible.builtin.stat:
+        path: /etc/apparmor.d/abi/4.0
+      register: cloudcli_apparmor_abi4
+
+    - name: Install the DbGate AppArmor profile
+      when: cloudcli_apparmor_abi4.stat.exists
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/apparmor.d/dbgate
+        mode: "0644"
+        content: |
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile dbgate /opt/DbGate/dbgate flags=(unconfined) {
+            userns,
+
+            # Site-specific additions and overrides. See local/README for details.
+            include if exists <local/dbgate>
+          }
+      notify: Reload the DbGate AppArmor profile
