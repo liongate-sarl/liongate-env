@@ -10,6 +10,7 @@ Official company development environment repository. Contains workstation provis
 - Node.js, npm and pnpm via NVM
 - Python via pyenv
 - Java via SDKMAN
+- PHP and Composer
 - AWS CLI
 - kubectl & Helm
 - Terraform
