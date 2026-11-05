@@ -1,0 +1,19 @@
+---
+- name: Install PHP CLI and the extensions Composer needs
+  become: true
+  ansible.builtin.apt:
+    name: "{{ devruntimes_php_packages }}"
+    state: present
+    update_cache: true
+
+- name: Install Composer (version {{ devruntimes_composer_version }})
+  become: true
+  retries: 3
+  delay: 5
+  ansible.builtin.get_url:
+    url: "https://getcomposer.org/download/{{ devruntimes_composer_version }}/composer.phar"
+    checksum: "sha256:https://getcomposer.org/download/{{ devruntimes_composer_version }}/composer.phar.sha256sum"
+    dest: /usr/local/bin/composer
+    owner: root
+    group: root
+    mode: "0755"

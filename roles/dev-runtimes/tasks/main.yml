@@ -11,6 +11,9 @@
 - name: Install Java via SDKMAN
   ansible.builtin.import_tasks: java.yml
 
+- name: Install PHP and Composer
+  ansible.builtin.import_tasks: php.yml
+
 # nvm and pyenv are cloned with git, so nothing puts them on the PATH of a new
 # shell. Without this block, node, npm, pnpm and the pyenv Python are missing
 # from every terminal. SDKMAN's installer adds its own init lines.

@@ -15,6 +15,17 @@ devruntimes_python_version: "3.12.7"
 # "not a valid java version" (list them with `sdk list java | grep tem`).
 devruntimes_java_version: "21.0.12+1.1-tem"
 
+# PHP (system package from the Ubuntu LTS archive) and Composer (pinned phar,
+# checked against the sha256 published by getcomposer.org)
+devruntimes_composer_version: "2.11.1"
+devruntimes_php_packages:
+  - php-cli
+  - php-curl
+  - php-mbstring
+  - php-xml
+  - php-zip
+  - unzip
+
 # Per-user install locations
 devruntimes_nvm_dir: "{{ ansible_user_dir }}/.nvm"
 devruntimes_pyenv_root: "{{ ansible_user_dir }}/.pyenv"
