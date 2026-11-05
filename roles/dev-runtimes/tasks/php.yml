@@ -17,3 +17,34 @@
     owner: root
     group: root
     mode: "0755"
+
+- name: List the enabled PHP CLI extensions
+  ansible.builtin.command: php -m
+  register: devruntimes_php_modules
+  changed_when: false
+  check_mode: false
+  # PHP is not installed yet during a dry run on a new machine.
+  failed_when: devruntimes_php_modules.rc != 0 and not ansible_check_mode
+
+- name: Enable the missing PHP CLI extensions
+  become: true
+  vars:
+    devruntimes_php_missing: >-
+      {{ devruntimes_php_extensions
+         | difference(devruntimes_php_modules.stdout_lines | map('lower')) }}
+  ansible.builtin.command: "phpenmod -s cli {{ devruntimes_php_missing | join(' ') }}"
+  changed_when: true
+  when:
+    - devruntimes_php_modules.rc == 0
+    - devruntimes_php_missing | length > 0
+
+- name: Check the PHP CLI extensions are enabled
+  ansible.builtin.command: php -m
+  when: not ansible_check_mode
+  register: devruntimes_php_modules_after
+  changed_when: false
+  check_mode: false
+  failed_when: >-
+    devruntimes_php_extensions
+    | difference(devruntimes_php_modules_after.stdout_lines | map('lower'))
+    | length > 0
