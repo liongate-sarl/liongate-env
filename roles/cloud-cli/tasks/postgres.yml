@@ -21,3 +21,12 @@
     name: "postgresql-client-{{ cloudcli_postgres_version }}"
     state: present
     update_cache: true
+
+# libpq5 may already come from the Ubuntu archive (php-pgsql in dev-runtimes
+# runs first). Align it on PGDG now, or the next run's system upgrade does it.
+- name: Upgrade libpq5 to the PGDG build
+  become: true
+  ansible.builtin.apt:
+    name: libpq5
+    state: latest
+    only_upgrade: true
