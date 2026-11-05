@@ -26,6 +26,37 @@ devruntimes_php_packages:
   - php-zip
   - unzip
 
+# PHP CLI extensions that must be enabled (names as in conf.d/*.ini).
+# php-cli and php-xml ship most of them; missing ones are enabled with phpenmod.
+devruntimes_php_extensions:
+  - calendar
+  - ctype
+  - curl
+  - dom
+  - exif
+  - ffi
+  - fileinfo
+  - ftp
+  - gettext
+  - iconv
+  - mbstring
+  - pdo
+  - phar
+  - posix
+  - readline
+  - shmop
+  - simplexml
+  - sockets
+  - sysvmsg
+  - sysvsem
+  - sysvshm
+  - tokenizer
+  - xml
+  - xmlreader
+  - xmlwriter
+  - xsl
+  - zip
+
 # Per-user install locations
 devruntimes_nvm_dir: "{{ ansible_user_dir }}/.nvm"
 devruntimes_pyenv_root: "{{ ansible_user_dir }}/.pyenv"
