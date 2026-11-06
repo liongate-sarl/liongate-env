@@ -9,7 +9,8 @@
   vars:
     # JetBrains publishes x64 (no suffix) and arm64 builds only.
     userstack_toolbox_arch: "{{ '-arm64' if userstack_dpkg_arch.stdout == 'arm64' else '' }}"
-    userstack_toolbox_url: "https://download.jetbrains.com/toolbox/jetbrains-toolbox-{{ userstack_jetbrains_toolbox_version }}{{ userstack_toolbox_arch }}.tar.gz"
+    userstack_toolbox_file: "jetbrains-toolbox-{{ userstack_jetbrains_toolbox_version }}{{ userstack_toolbox_arch }}.tar.gz"
+    userstack_toolbox_url: "https://download.jetbrains.com/toolbox/{{ userstack_toolbox_file }}"
   block:
     - name: Download the JetBrains Toolbox tarball
       retries: 3
