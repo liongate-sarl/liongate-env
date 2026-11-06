@@ -72,6 +72,15 @@ become_args() {
   printf '%s\n' --ask-become-pass
 }
 
+# The playbook writes this summary (dev-runtimes role); repeat it here so the
+# default accounts are not lost in the Ansible output.
+show_database_accounts() {
+  local summary="${HOME}/.liongate/databases/credentials.txt"
+  [[ -r "${summary}" ]] || return 0
+  printf '\n'
+  cat "${summary}"
+}
+
 main() {
   check_os
   ensure_ansible
@@ -83,6 +92,7 @@ main() {
   log "Running playbook: ${PLAYBOOK} (inventory from ansible.cfg)"
   ansible-playbook "${become[@]}" "${PLAYBOOK}" "$@"
   log "Bootstrap complete."
+  show_database_accounts
 }
 
 main "$@"

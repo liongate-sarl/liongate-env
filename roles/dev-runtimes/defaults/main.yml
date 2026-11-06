@@ -76,3 +76,16 @@ devruntimes_python_build_deps:
   - tk-dev
   - libncursesw5-dev
   - xz-utils
+
+# Database servers (Docker containers managed with Docker Compose).
+# Default accounts are for local development only: ports bind to 127.0.0.1.
+# Set to false to skip them (e.g. in CI, where no Docker daemon runs).
+devruntimes_install_databases: true
+devruntimes_databases_dir: "{{ ansible_user_dir }}/.liongate/databases"
+devruntimes_postgres_image: "postgres:16"
+devruntimes_postgres_port: 5432
+devruntimes_postgres_user: postgres
+devruntimes_postgres_password: postgres
+devruntimes_mysql_image: "mysql:8.4"
+devruntimes_mysql_port: 3306
+devruntimes_mysql_root_password: root
