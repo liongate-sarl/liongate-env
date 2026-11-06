@@ -58,7 +58,8 @@ jobs:
             cp -r /src /work && chown -R dev:dev /work
             # Skip the heavy GUI apps that cannot run/verify in CI:
             # Docker Desktop needs KVM; DbGate is a heavy Electron GUI.
-            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false -e cloudcli_install_dbgate=false"
+            # No Docker daemon either, so the database containers are skipped.
+            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false -e cloudcli_install_dbgate=false -e devruntimes_install_databases=false"
             echo "::group::First run"
             su - dev -c "cd /work && $RUN"
             echo "::endgroup::"

@@ -1,0 +1,35 @@
+---
+- name: Run the database servers in Docker
+  when: devruntimes_install_databases | bool
+  block:
+    - name: Create the database servers directory
+      ansible.builtin.file:
+        path: "{{ devruntimes_databases_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Deploy the database servers Compose file
+      ansible.builtin.template:
+        src: databases-compose.yml.j2
+        dest: "{{ devruntimes_databases_dir }}/compose.yml"
+        mode: "0644"
+
+    - name: Deploy the default database accounts summary
+      ansible.builtin.template:
+        src: databases-credentials.txt.j2
+        dest: "{{ devruntimes_databases_dir }}/credentials.txt"
+        mode: "0600"
+
+    # Through sudo: the user's new docker group membership only applies to
+    # their next login, not to this run. The default context is the Docker
+    # Engine socket, not Docker Desktop's VM, so the servers start on boot.
+    - name: Start the database servers
+      become: true
+      ansible.builtin.command:
+        argv: [docker, --context, default, compose, --project-directory, "{{ devruntimes_databases_dir }}", up, --detach, --wait]
+      register: devruntimes_databases_up
+      changed_when: devruntimes_databases_up.stderr is search('Creat|Recreat|Start')
+
+    - name: Show the default database accounts
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.template', 'databases-credentials.txt.j2') | trim | split('\n') }}"
