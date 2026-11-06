@@ -1,0 +1,61 @@
+---
+- name: Check for an existing JetBrains Toolbox install
+  ansible.builtin.stat:
+    path: "{{ userstack_jetbrains_toolbox_dir }}/bin/jetbrains-toolbox"
+  register: userstack_toolbox_stat
+
+- name: Install JetBrains Toolbox from the official tarball
+  when: not userstack_toolbox_stat.stat.exists
+  vars:
+    # JetBrains publishes x64 (no suffix) and arm64 builds only.
+    userstack_toolbox_arch: "{{ '-arm64' if userstack_dpkg_arch.stdout == 'arm64' else '' }}"
+    userstack_toolbox_url: "https://download.jetbrains.com/toolbox/jetbrains-toolbox-{{ userstack_jetbrains_toolbox_version }}{{ userstack_toolbox_arch }}.tar.gz"
+  block:
+    - name: Download the JetBrains Toolbox tarball
+      retries: 3
+      delay: 5
+      ansible.builtin.get_url:
+        url: "{{ userstack_toolbox_url }}"
+        checksum: "sha256:{{ userstack_toolbox_url }}.sha256"
+        dest: /tmp/jetbrains-toolbox.tar.gz
+        mode: "0644"
+
+    - name: Create the JetBrains Toolbox install directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ userstack_jetbrains_toolbox_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Unpack JetBrains Toolbox into its install directory
+      become: true
+      ansible.builtin.unarchive:
+        src: /tmp/jetbrains-toolbox.tar.gz
+        dest: "{{ userstack_jetbrains_toolbox_dir }}"
+        remote_src: true
+        extra_opts:
+          - --strip-components=1
+
+- name: Symlink the JetBrains Toolbox binary onto PATH
+  become: true
+  ansible.builtin.file:
+    src: "{{ userstack_jetbrains_toolbox_dir }}/bin/jetbrains-toolbox"
+    dest: /usr/local/bin/jetbrains-toolbox
+    state: link
+
+# On first launch the app adds its own entry in ~/.local/share/applications;
+# this one makes it findable in the app menu before that.
+- name: Create the JetBrains Toolbox desktop entry
+  become: true
+  ansible.builtin.copy:
+    dest: /usr/share/applications/jetbrains-toolbox.desktop
+    mode: "0644"
+    content: |
+      [Desktop Entry]
+      Name=JetBrains Toolbox
+      Exec={{ userstack_jetbrains_toolbox_dir }}/bin/jetbrains-toolbox
+      Icon={{ userstack_jetbrains_toolbox_dir }}/bin/toolbox.svg
+      Type=Application
+      Categories=Development;
+      StartupNotify=false
+      Terminal=false

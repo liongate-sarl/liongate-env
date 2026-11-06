@@ -27,6 +27,9 @@
 - name: Install Postman
   ansible.builtin.import_tasks: postman.yml
 
+- name: Install JetBrains Toolbox
+  ansible.builtin.import_tasks: jetbrains-toolbox.yml
+
 - name: Install Docker Desktop
   ansible.builtin.import_tasks: docker-desktop.yml
 

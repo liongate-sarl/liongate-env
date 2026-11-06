@@ -14,6 +14,12 @@ userstack_insomnia_repo: "Kong/insomnia"
 userstack_postman_url: "https://dl.pstmn.io/download/latest/linux_64"
 userstack_postman_dir: /opt/postman
 
+# JetBrains Toolbox — no apt repo; pinned tarball (checked against the sha256
+# JetBrains publishes next to it) unpacked into /opt. The app then updates
+# itself and installs the IDEs per user, under ~/.local/share/JetBrains.
+userstack_jetbrains_toolbox_version: "3.9.1.89198"
+userstack_jetbrains_toolbox_dir: /opt/jetbrains-toolbox
+
 # Docker Desktop (.deb). Requires KVM at runtime, so it is gated and is NOT
 # verified in the container self-test. Docker removes old versioned .debs
 # from its CDN, so the unversioned URL (always the latest release) is used.

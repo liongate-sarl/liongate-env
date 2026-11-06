@@ -3,7 +3,7 @@ galaxy_info:
   role_name: user_stack
   namespace: liongate
   author: LIONGATE
-  description: End-user application stack — browser, comms, media, office, API tools — plus onboarding.
+  description: End-user application stack — browser, comms, media, office, API tools, JetBrains Toolbox — plus onboarding.
   license: MIT
   min_ansible_version: "2.15"
   platforms:
