@@ -16,6 +16,7 @@ Official company development environment repository. Contains workstation provis
 - kubectl & Helm
 - Terraform
 - VS Code Standardization
+- JetBrains Toolbox
 - Git & SSH Configuration
 - Automated Developer Onboarding
 
