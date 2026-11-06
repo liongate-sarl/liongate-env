@@ -21,7 +21,9 @@ devruntimes_composer_version: "2.11.1"
 devruntimes_php_packages:
   - php-cli
   - php-curl
+  - php-intl
   - php-mbstring
+  - php-pgsql
   - php-xml
   - php-zip
   - unzip
@@ -39,8 +41,11 @@ devruntimes_php_extensions:
   - ftp
   - gettext
   - iconv
+  - intl
   - mbstring
   - pdo
+  - pdo_pgsql
+  - pgsql
   - phar
   - posix
   - readline
