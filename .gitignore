@@ -1,18 +1,37 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Local environment and secret files
+.env
+.env.*
+!.env.example
+!.env.*.example
+.vault_pass
+.vault_pass*
 
-# Other files and folders
-.settings/
+# Ansible output
+*.retry
+*.log
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Python tooling and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Local Terraform state and working directory
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Operating system and editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Local development tools and operating system files
+/.idea/
+/.vscode/
+/.fleet/
+.DS_Store
+Thumbs.db

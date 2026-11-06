@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: common
   namespace: liongate
-  author: Liongate
+  author: LIONGATE
   description: Base workstation setup — apt packages, Git and SSH client configuration.
   license: MIT
   min_ansible_version: "2.15"

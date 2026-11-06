@@ -1,9 +1,9 @@
 ---
-# Root provisioning playbook for Liongate workstations.
+# Root provisioning playbook for LIONGATE workstations.
 #
 # The common role always runs (base packages, Git and SSH configuration).
 # Stack roles are added under the 'dev' and 'user' tags in later WKS tickets.
-- name: Provision Liongate workstation
+- name: Provision LIONGATE workstation
   hosts: all
   gather_facts: true
   roles:

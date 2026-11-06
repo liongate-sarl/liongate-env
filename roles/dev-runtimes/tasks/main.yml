@@ -23,7 +23,7 @@
 - name: Load nvm and pyenv in interactive shells
   ansible.builtin.blockinfile:
     path: "{{ ansible_user_dir }}/.bashrc"
-    marker: "# {mark} Liongate dev runtimes (managed by provisioning)"
+    marker: "# {mark} LIONGATE dev runtimes (managed by provisioning)"
     create: true
     mode: "0644"
     block: |

@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: user_stack
   namespace: liongate
-  author: Liongate
+  author: LIONGATE
   description: End-user application stack — browser, comms, media, office, API tools — plus onboarding.
   license: MIT
   min_ansible_version: "2.15"

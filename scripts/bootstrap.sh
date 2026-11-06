@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Liongate workstation bootstrap.
+# LIONGATE workstation bootstrap.
 #
 # Ensures Ansible is available on a freshly installed Ubuntu LTS, then runs the
 # provisioning playbook. Safe to re-run: it installs nothing that is already

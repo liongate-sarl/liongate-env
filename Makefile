@@ -1,4 +1,4 @@
-# Liongate workstation provisioning — entry point.
+# LIONGATE workstation provisioning — entry point.
 #
 # `make bootstrap` is the one command to run on a freshly installed OS: it
 # installs Ansible (via scripts/bootstrap.sh) and provisions the full stack.
