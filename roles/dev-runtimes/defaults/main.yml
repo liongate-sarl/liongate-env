@@ -23,7 +23,9 @@ devruntimes_php_packages:
   - php-curl
   - php-intl
   - php-mbstring
+  - php-pcov
   - php-pgsql
+  - php-xdebug
   - php-xml
   - php-zip
   - unzip
@@ -43,6 +45,8 @@ devruntimes_php_extensions:
   - iconv
   - intl
   - mbstring
+  # Code coverage driver (preferred by PHPUnit over Xdebug when both load)
+  - pcov
   - pdo
   - pdo_pgsql
   - pgsql
@@ -56,6 +60,7 @@ devruntimes_php_extensions:
   - sysvsem
   - sysvshm
   - tokenizer
+  - xdebug
   - xml
   - xmlreader
   - xmlwriter
