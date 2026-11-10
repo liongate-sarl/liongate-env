@@ -1,0 +1,65 @@
+---
+# Pulled ahead of time so the first scan of a project does not stop on
+# "Unable to find image ... locally". Once Docker Desktop is installed, the
+# docker CLI talks to its VM (context desktop-linux), not to Docker Engine,
+# so the images go where the projects' `docker run` looks for them.
+- name: Pull the security scanner images
+  when: userstack_pull_security_images | bool
+  vars:
+    userstack_docker_context: "{{ 'desktop-linux' if userstack_docker_desktop | bool else 'default' }}"
+  block:
+    # Docker Desktop's VM only runs while the app does. On its first launch it
+    # waits for the user to accept the Docker subscription agreement.
+    - name: Start Docker Desktop
+      when: userstack_docker_desktop | bool
+      ansible.builtin.systemd_service:
+        name: docker-desktop
+        scope: user
+        state: started
+
+    - name: Wait for the Docker daemon
+      ansible.builtin.command:
+        argv: [docker, --context, "{{ userstack_docker_context }}", info]
+      # Docker Engine needs sudo: the user's docker group membership only
+      # applies to their next login. Docker Desktop's socket is the user's own.
+      become: "{{ not userstack_docker_desktop | bool }}"
+      register: userstack_docker_info
+      until: userstack_docker_info.rc == 0
+      retries: 24
+      delay: 5
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+    - name: Explain why the security scanner images were not pulled
+      when: userstack_docker_info.rc != 0
+      ansible.builtin.debug:
+        msg: >-
+          Docker ({{ userstack_docker_context }}) did not answer. Open Docker
+          Desktop, accept its agreement, then run the playbook again to pull
+          {{ userstack_security_images | join(', ') }}.
+
+    - name: List the security scanner images already present
+      when: userstack_docker_info.rc == 0
+      ansible.builtin.command:
+        argv: [docker, --context, "{{ userstack_docker_context }}", image, inspect, "{{ item }}"]
+      become: "{{ not userstack_docker_desktop | bool }}"
+      loop: "{{ userstack_security_images }}"
+      register: userstack_security_images_present
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+    # Only missing images are pulled, so a rerun reports no change. Run
+    # `docker pull <image>` by hand to refresh a moving tag such as :stable.
+    - name: Pull the missing security scanner images
+      when:
+        - userstack_docker_info.rc == 0
+        - item.rc != 0
+      ansible.builtin.command:
+        argv: [docker, --context, "{{ userstack_docker_context }}", pull, --quiet, "{{ item.item }}"]
+      become: "{{ not userstack_docker_desktop | bool }}"
+      loop: "{{ userstack_security_images_present.results | default([]) }}"
+      loop_control:
+        label: "{{ item.item }}"
+      changed_when: true

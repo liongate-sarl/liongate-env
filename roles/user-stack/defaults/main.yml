@@ -26,5 +26,15 @@ userstack_jetbrains_toolbox_dir: /opt/jetbrains-toolbox
 userstack_docker_desktop: true
 userstack_docker_desktop_deb_url: https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb
 
+# Security scanner images used by the projects' scans (Semgrep for SAST,
+# OWASP ZAP for DAST, Gitleaks for secrets), pulled ahead of time into Docker
+# Desktop, or into Docker Engine when Docker Desktop is off.
+# Set to false to skip them (e.g. in CI, where no Docker daemon runs).
+userstack_pull_security_images: true
+userstack_security_images:
+  - "semgrep/semgrep:latest"
+  - "ghcr.io/zaproxy/zaproxy:stable"
+  - "ghcr.io/gitleaks/gitleaks:v8.30.1"
+
 # Onboarding welcome file.
 userstack_onboarding_file: "{{ ansible_user_dir }}/liongate-onboarding.md"
