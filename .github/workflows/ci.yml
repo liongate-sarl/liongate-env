@@ -60,7 +60,8 @@ jobs:
             # Docker Desktop needs KVM; DbGate is a heavy Electron GUI.
             # No Docker daemon either, so the database containers and the
             # security scanner images are skipped.
-            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false -e cloudcli_install_dbgate=false -e devruntimes_install_databases=false -e userstack_pull_security_images=false"
+            RUN="ansible-playbook site.yml -e userstack_docker_desktop=false -e cloudcli_install_dbgate=false"
+            RUN="$RUN -e devruntimes_install_databases=false -e userstack_pull_security_images=false"
             echo "::group::First run"
             su - dev -c "cd /work && $RUN"
             echo "::endgroup::"
