@@ -33,5 +33,8 @@
 - name: Install Docker Desktop
   ansible.builtin.import_tasks: docker-desktop.yml
 
+- name: Pull the Semgrep, ZAP and Gitleaks images
+  ansible.builtin.import_tasks: security-images.yml
+
 - name: Deploy onboarding materials
   ansible.builtin.import_tasks: onboarding.yml
