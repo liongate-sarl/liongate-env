@@ -19,6 +19,7 @@ devruntimes_java_version: "21.0.12+1.1-tem"
 # checked against the sha256 published by getcomposer.org)
 devruntimes_composer_version: "2.11.1"
 devruntimes_php_packages:
+  - php-bcmath
   - php-cli
   - php-curl
   - php-intl
@@ -33,6 +34,7 @@ devruntimes_php_packages:
 # PHP CLI extensions that must be enabled (names as in conf.d/*.ini).
 # php-cli and php-xml ship most of them; missing ones are enabled with phpenmod.
 devruntimes_php_extensions:
+  - bcmath
   - calendar
   - ctype
   - curl
