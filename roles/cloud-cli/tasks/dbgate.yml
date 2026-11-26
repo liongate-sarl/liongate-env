@@ -9,8 +9,23 @@
       check_mode: false
       failed_when: false
 
+    - name: Check whether the installed DbGate version meets the requested version
+      ansible.builtin.command:
+        argv:
+          - dpkg
+          - --compare-versions
+          - "{{ cloudcli_dbgate_check.stdout }}"
+          - ge
+          - "{{ cloudcli_dbgate_version }}"
+      register: cloudcli_dbgate_version_check
+      changed_when: false
+      failed_when: false
+      when: cloudcli_dbgate_check.rc == 0
+
     - name: Install DbGate from the GitHub release .deb
-      when: cloudcli_dbgate_version not in (cloudcli_dbgate_check.stdout | default(''))
+      when: >-
+        cloudcli_dbgate_check.rc != 0 or
+        cloudcli_dbgate_version_check.rc != 0
       vars:
         cloudcli_dbgate_deb: "dbgate-{{ cloudcli_dbgate_version }}-linux_{{ cloudcli_dpkg_arch.stdout }}.deb"
       block:
